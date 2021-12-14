@@ -1,0 +1,40 @@
+service: event-filter
+
+frameworkVersion: '2'
+provider:
+  name: aws
+  runtime: python3.8
+  lambdaHashingVersion: 20201221
+  iam:
+    role: !Sub arn:aws:iam::${AWS::AccountId}:role/LabRole
+  eventBridge:
+    useCloudFormation: true
+
+functions:
+  all:
+    handler: handlerAll.allHandler
+    events:
+     - eventBridge:
+          eventBus:
+            - arn:aws:events:us-east-1:725606180892:event-bus/pizzaria
+          pattern:
+            source:
+              - com.aws.pizzaria
+  pronto:
+    handler: handlerReady.readyHandler
+    events:
+      - eventBridge:
+          eventBus:
+            - arn:aws:events:us-east-1:725606180892:event-bus/pizzaria
+          pattern:
+            source:
+              - com.aws.pizzaria
+            detail:
+              status:
+                - pronto
+  end:
+    handler: handlerEnd.endHandler
+    events:
+      - sqs:
+          arn: arn:aws:sqs:us-east-1:725606180892:espera-entrega
+           
