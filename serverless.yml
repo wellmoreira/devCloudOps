@@ -20,7 +20,7 @@ functions:
           pattern:
             source:
               - com.aws.pizzaria
-  pronto:
+  ready:
     handler: handlerReady.readyHandler
     events:
       - eventBridge:
